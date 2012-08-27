@@ -9,10 +9,8 @@
     var camera, renderer, scene, light;
 
     this.persons = {};
-
-    this.clock = new Clock(-1);
-
     this.rendering = false;
+
     // setup renderer, camera, scene, and so on.
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(width, height);

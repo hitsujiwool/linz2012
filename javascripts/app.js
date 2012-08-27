@@ -54,12 +54,12 @@ $(function() {
     $('.speed').text('x' + val);
   });
 
-  $('.speed').text('x' + state.clock.getSpeed());
+  $('.speed').text('x' + state.getSpeed());
 
-  setInterval(function() {
+  state.on('tick', function() {
     $real.text(util.formatTime(new Date()));
-    $fake.text(util.formatTime(state.clock.getDate()));
-  }, 100);
+    $fake.text(util.formatTime(state.getDate()));
+  });
 
   world.start();
   document.body.appendChild(world.renderer.domElement);
