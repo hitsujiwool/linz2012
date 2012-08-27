@@ -7,9 +7,12 @@
 
     THREE.Object3D.call(this);
 
-    stream.on('location', function(data) {
+    stream.on('latest', function(data) {
       that.addToken(data);
     }); 
+
+    stream.on('past', function(data) {
+    });
   }
 
   Person.prototype = new THREE.Object3D();
