@@ -10,6 +10,7 @@
 
     this.persons = {};
     this.rendering = false;
+    this.state = state;
 
     // setup renderer, camera, scene, and so on.
     renderer = new THREE.WebGLRenderer();
@@ -85,6 +86,8 @@
     Object.keys(this.persons).forEach(function(id) {
       that.persons[id].update();
     });
+
+    this.state.tick();
 
     this.controls.update();
 
