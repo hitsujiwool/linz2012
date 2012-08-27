@@ -14,48 +14,42 @@
   LogStream.prototype = new EventEmitter;
 
   LogStream.prototype.connect = function() {
-    var that = this;
-    var persons = ['foo', 'bar', 'baz'];
-    var loop = setInterval(function() {
-      var person = persons.shift();
-      if (person) {
-        that.emit('connection', new PersonStream(person));
-      } else {
-        clearInterval(loop);
+    var that = this,
+        io = new Dummy(),
+        streams = {};
+
+    io.on('anything', function(data) {
+      var name = data.name,
+          stream = streams[name];
+      if (!stream) {
+        stream = streams[name] = new PersonStream(name);
+        that.emit('connection', stream);
+        stream.emit('latest', data);
+        io.on(name, function(data) {
+          stream.emit('latest', data);
+        });
       }
-    }, 5000);
+    });
+    
+    io.on('data', function(data) {
+      var name = data.name,
+          stream = streams[name];
+      if (!stream) {
+        stream = streams[name] = new PersonStream(name);
+        that.emit('connection', stream);
+      }
+      stream.emit('past', data);
+    });
+
+    io.connect();
   };
-  
+
   function PersonStream(id) {
     this.id = id;
-    this.locationMock();
-    //this.positionMock();
     EventEmitter.call(this);
   }
 
   PersonStream.prototype = new EventEmitter();
-
-  PersonStream.prototype.positionMock = function() {
-    var that = this;
-    setInterval(function() {
-      that.emit('position', { direction: Math.PI * 2 * Math.random() });
-    }, 100);
-  };
-
-  PersonStream.prototype.locationMock = function() {
-    var that = this,
-        data = { x: Math.random() * 500 - 500, y: 0, z: Math.random() * 200, timestamp: new Date().getTime() };
-    setInterval(function() {
-      var newData = {};
-      for (var key in data) {
-        newData.x = data.x + (Math.random() * 100 - 10);
-        newData.y = 0;
-        newData.z = data.z + (Math.random() * 100 - 50);
-      }
-      that.emit('location', newData);
-      data = newData;
-    }, 1000);
-  };
 
   exports.LogStream = LogStream;
   
