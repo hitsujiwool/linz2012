@@ -19,30 +19,30 @@
     var loop = setInterval(function() {
       var person = persons.shift();
       if (person) {
-        that.emit('connection', new Person(person));
+        that.emit('connection', new PersonStream(person));
       } else {
         clearInterval(loop);
       }
     }, 5000);
   };
   
-  function Person(id) {
+  function PersonStream(id) {
     this.id = id;
     this.locationMock();
     //this.positionMock();
     EventEmitter.call(this);
   }
 
-  Person.prototype = new EventEmitter();
+  PersonStream.prototype = new EventEmitter();
 
-  Person.prototype.positionMock = function() {
+  PersonStream.prototype.positionMock = function() {
     var that = this;
     setInterval(function() {
       that.emit('position', { direction: Math.PI * 2 * Math.random() });
     }, 100);
   };
 
-  Person.prototype.locationMock = function() {
+  PersonStream.prototype.locationMock = function() {
     var that = this,
         data = { x: Math.random() * 500 - 500, y: 0, z: Math.random() * 200, timestamp: new Date().getTime() };
     setInterval(function() {
