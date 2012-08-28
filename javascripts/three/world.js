@@ -69,6 +69,8 @@
     stream.connect();
   };
   
+  World.prototype = new EventEmitter();
+  
   World.prototype.start = function() {
     this.rendering = true;
     this.render();
@@ -83,6 +85,8 @@
   World.prototype.render = function() {
     var that = this;
 
+    this.emit('beforerender');
+
     Object.keys(this.persons).forEach(function(id) {
       that.persons[id].update();
     });
@@ -96,6 +100,8 @@
     if (this.rendering) {
       requestAnimationFrame(function() { that.render(); });
     }
+
+    this.emit('afterrender');
   };
 
   /** 

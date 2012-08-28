@@ -6,7 +6,9 @@ $(function() {
 
   var stream = new LogStream(),
       state = new State(),
-      world = new World(stream, state, window.innerWidth, window.innerHeight);
+      world = new World(stream, state, window.innerWidth, window.innerHeight),
+      stats = new Stats();
+
 
   var $fake = $('.fake span'),
       $real = $('.real span');
@@ -60,8 +62,14 @@ $(function() {
     $real.text(util.formatTime(new Date()));
     $fake.text(util.formatTime(state.getDate()));
   });
-
+  
+  $(stats.domElement)
+    .addClass('stats')
+    .appendTo(document.body);
+  
   world.start();
-  document.body.appendChild(world.renderer.domElement);
+  world.on('beforerender', stats.begin);
+  world.on('afterrender', stats.end);
 
+  document.body.appendChild(world.renderer.domElement);
 });
